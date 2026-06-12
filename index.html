@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liguilla Pokémon</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Press+Start+2P&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(ellipse at bottom, #1b1b2f 0%, #0f0f23 100%); min-height: 100vh; color: #fff; padding: 20px; overflow-x: hidden; }
+body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+body::after { content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 40%, rgba(231,76,60,.04) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(52,152,219,.04) 0%, transparent 40%), radial-gradient(circle at 50% 70%, rgba(241,196,15,.03) 0%, transparent 30%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='200' height='200'%3E%3Ccircle cx='100' cy='100' r='85' fill='none' stroke='%23e74c3c' stroke-width='3' opacity='.06'/%3E%3Cpath d='M15 100 L185 100' stroke='%23e74c3c' stroke-width='3' opacity='.06'/%3E%3Ccircle cx='100' cy='100' r='18' fill='none' stroke='%23e74c3c' stroke-width='3' opacity='.06'/%3E%3C/svg%3E") repeat 0 0 / 400px 400px; pointer-events: none; z-index: 0; }
+.container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+header { text-align: center; padding: 25px 0 20px; position: relative; }
+header::after { content: ''; display: block; width: 80%; max-width: 500px; height: 3px; margin: 15px auto 0; background: linear-gradient(90deg, transparent, #e74c3c, #f7971e, #e74c3c, transparent); border-radius: 2px; }
+header h1 { font-size: 2.5em; background: linear-gradient(135deg, #ff6b35, #f7971e, #ffd200); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; justify-content: center; gap: 12px; font-family: 'Fredoka One', 'Segoe UI', sans-serif; text-shadow: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,.3)); }
+.pokeball-title { display: inline-block; width: 42px; height: 42px; border-radius: 50%; border: 3px solid #222; background: linear-gradient(180deg, #ff3b30 0%, #ff3b30 46%, #222 46%, #222 54%, #f0f0f0 54%, #f0f0f0 100%); position: relative; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.pokeball-title::before { content: ''; position: absolute; top: 50%; left: 50%; width: 13px; height: 13px; background: #f0f0f0; border: 3px solid #222; border-radius: 50%; transform: translate(-50%, -50%); }
+.pokeball-title::after { content: ''; position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; background: #f0f0f0; border: 2px solid #222; border-radius: 50%; transform: translate(-50%, -50%); z-index: 1; }
+header p { color: #aab; margin-top: 6px; font-size: .95em; letter-spacing: .5px; }
+header p span { color: #f7971e; font-weight: 600; }
+.particle { position: fixed; font-size: 12px; opacity: .08; pointer-events: none; z-index: 0; animation: float 20s infinite linear; }
+@keyframes float { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-100vh) rotate(360deg); } }
+nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
+nav button { padding: 10px 24px; border: 2px solid #e74c3c; background: rgba(231,76,60,.08); color: #ff6b6b; border-radius: 25px; cursor: pointer; font-size: .9em; font-weight: 700; transition: all .3s; letter-spacing: .5px; text-transform: uppercase; backdrop-filter: blur(5px); }
+nav button:hover { background: #e74c3c; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(231,76,60,.3); }
+nav button.active { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border-color: #c0392b; box-shadow: 0 4px 15px rgba(231,76,60,.3); }
+.section { display: none; background: rgba(255,255,255,.04); border-radius: 20px; padding: 25px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 32px rgba(0,0,0,.2); }
+.section.active { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.btn { padding: 9px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: 700; font-size: .85em; transition: all .3s; text-transform: uppercase; letter-spacing: .5px; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: linear-gradient(135deg, #f7971e, #ffd200); color: #1a1a2e; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(247,151,30,.4); }
+.btn-sm { padding: 5px 14px; font-size: .75em; }
+.btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; }
+.btn-danger:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(231,76,60,.4); }
+.btn-success { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; }
+.btn-success:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(46,204,113,.4); }
+table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; border-radius: 12px; overflow: hidden; }
+#tabla-clasificacion { border: 4px solid #f1c40f; box-shadow: 0 0 0 4px #222, 0 0 0 7px #3498db, 0 0 0 10px #222, 0 6px 35px rgba(52,152,219,.4); }
+th, td { padding: 12px 14px; text-align: left; }
+th { background: rgba(231,76,60,.15); color: #ff6b6b; font-weight: 700; font-size: .85em; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid rgba(231,76,60,.2); }
+td { border-bottom: 1px solid rgba(255,255,255,.05); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.04); }
+.pokeball-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; border: 1px solid rgba(255,255,255,.2); vertical-align: middle; }
+.npc-sprite { vertical-align: middle; margin-left: 5px; width: 28px; height: auto; image-rendering: pixelated; }
+tr.top4 td { background: rgba(46,204,113,.12) !important; }
+tr.bottom4 td { background: rgba(231,76,60,.12) !important; }
+.pos-1 { font-weight: 700; }
+.pos-1 td:first-child { color: #ffd700; font-size: 1.1em; }
+.pos-2 td:first-child { color: #c0c0c0; }
+.pos-3 td:first-child { color: #cd7f32; }
+.pos-4 td:first-child { color: #4fc3f7; }
+.match-card { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border-radius: 12px; margin-bottom: 8px; gap: 15px; flex-wrap: wrap; border: 1px solid rgba(255,255,255,.06); transition: all .3s; }
+.match-card:hover { border-color: rgba(247,151,30,.2); box-shadow: 0 4px 20px rgba(0,0,0,.15); }
+.match-card .teams { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }
+.match-card .vs { color: #ff6b6b; font-weight: 800; font-size: .9em; padding: 2px 10px; background: rgba(231,76,60,.1); border-radius: 12px; }
+.match-card .score { display: flex; align-items: center; gap: 10px; }
+.match-card .score input { width: 45px; padding: 6px; text-align: center; border: 2px solid rgba(255,255,255,.15); background: rgba(255,255,255,.08); color: #fff; border-radius: 8px; font-size: 1em; font-weight: 700; }
+.match-card .score input:focus { outline: none; border-color: #f7971e; }
+.match-card .round-badge { background: linear-gradient(135deg, rgba(247,151,30,.15), rgba(255,210,0,.1)); color: #ffd200; padding: 3px 12px; border-radius: 12px; font-size: .7em; font-weight: 700; border: 1px solid rgba(247,151,30,.2); }
+.entrenador-input { background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.1); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: .9em; width: 160px; transition: all .3s; }
+.entrenador-input:focus { outline: none; border-color: #e74c3c; box-shadow: 0 0 10px rgba(231,76,60,.2); }
+.edit-calendar-btn { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
+.edit-calendar-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(52,152,219,.4); }
+.emparejar-btn { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: #fff; }
+.emparejar-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(155,89,182,.4); }
+.select-editor { width: 100%; padding: 6px 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 8px; font-size: .85em; }
+.select-editor option { background: #1b1b2f; }
+.match-editor-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,.03); border-radius: 8px; margin-bottom: 6px; }
+.match-editor-row .vs-sm { color: #ff6b6b; font-weight: 700; font-size: .85em; }
+.ronda-editor { margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,.04); border-radius: 12px; border: 1px solid rgba(255,255,255,.06); }
+.ronda-editor h3 { color: #f7971e; margin-bottom: 10px; font-size: 1em; }
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.75); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+.modal.active { display: flex; animation: fadeIn .2s ease; }
+.modal-content { background: linear-gradient(145deg, #1e1e3a, #16162e); border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.modal-content h2 { margin-bottom: 20px; color: #f7971e; font-family: 'Fredoka One', 'Segoe UI', sans-serif; }
+.modal-content label { display: block; margin: 10px 0 5px; color: #ccc; font-size: .9em; }
+.modal-content select, .modal-content input[type="number"] { width: 100%; padding: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 8px; margin-bottom: 10px; }
+.modal-content select option { background: #1b1b2f; }
+.modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; color: #aaa; font-size: .9em; }
+.form-group input[type="text"] { width: 100%; padding: 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 8px; font-size: 1em; }
+.form-group input[type="text"]:focus { outline: none; border-color: #e74c3c; }
+.entrenador-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin: 15px 0; }
+.entrenador-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border-radius: 10px; border: 1px solid rgba(255,255,255,.06); transition: all .3s; }
+.entrenador-item:hover { border-color: rgba(231,76,60,.2); }
+.entrenador-item .color-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(255,255,255,.15); }
+.edit-icon { cursor: pointer; margin-left: 5px; color: #3498db; font-size: .8em; opacity: .6; transition: .3s; }
+.edit-icon:hover { opacity: 1; color: #5dade2; }
+.actions-bar { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+.week-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; }
+.week-btn { padding: 7px 16px; border: 2px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: #aaa; border-radius: 20px; cursor: pointer; font-size: .82em; font-weight: 600; transition: all .3s; }
+.week-btn:hover { border-color: #f7971e; color: #f7971e; background: rgba(247,151,30,.08); transform: translateY(-1px); }
+.week-btn.active { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border-color: #c0392b; box-shadow: 0 3px 10px rgba(231,76,60,.3); }
+.bracket { display: flex; justify-content: center; align-items: stretch; gap: 30px; padding: 20px 0; flex-wrap: wrap; }
+.bracket-round { flex: 1; min-width: 220px; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
+.bracket-round h3 { text-align: center; color: #ff6b6b; margin-bottom: 8px; font-size: .95em; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+.bracket-match { background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 14px; text-align: center; transition: all .3s; }
+.bracket-match:hover { border-color: rgba(247,151,30,.2); }
+.bracket-match .team-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: 8px; margin: 3px 0; transition: all .3s; }
+.bracket-match .team-row.winner { background: rgba(46,204,113,.12); border: 1px solid rgba(46,204,113,.25); }
+.bracket-match .team-row .score { font-weight: 800; font-size: 1.15em; min-width: 28px; text-align: center; color: #fff; }
+.bracket-match .team-row .name { flex: 1; text-align: left; margin-left: 8px; font-weight: 500; }
+.bracket-match .pendiente { color: #666; font-style: italic; padding: 10px; }
+.final-round { min-width: 280px; }
+.final-match { background: linear-gradient(135deg, rgba(247,151,30,.08), rgba(255,210,0,.04)); border: 2px solid #f7971e; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(247,151,30,.1); }
+.final-match h4 { color: #ffd200; margin-bottom: 10px; font-size: 1.1em; font-family: 'Fredoka One', 'Segoe UI', sans-serif; }
+.trophy-icon { font-size: 2em; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: .7em; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-left: 6px; }
+.badge-fire { background: rgba(231,76,60,.2); color: #ff6b6b; }
+.badge-water { background: rgba(52,152,219,.2); color: #5dade2; }
+.badge-grass { background: rgba(46,204,113,.2); color: #58d68d; }
+.badge-electric { background: rgba(247,151,30,.2); color: #ffd200; }
+@media (max-width: 600px) { header h1 { font-size: 1.6em; } .match-card { flex-direction: column; align-items: stretch; } .match-card .teams { justify-content: center; } .match-card .score { justify-content: center; } .bracket { flex-direction: column; align-items: center; } .section { padding: 15px; } th, td { padding: 8px 10px; font-size: .85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1><span class="pokeball-title"></span> Liguilla Pokémon</h1>
+  <p><span id="num-entrenadores" style="color:#f7971e;font-weight:600"></span> entrenadores · Todos contra todos · <span id="num-rondas" style="color:#f7971e;font-weight:600"></span> rondas</p>
+  <button id="btn-admin" onclick="toggleAdmin()" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:1.5em;cursor:pointer;opacity:.5" title="Modo edición">🔒</button>
+</header>
+
+<nav>
+  <button class="active" data-section="clasificacion" style="color:#e74c3c">📊 Clasificación</button>
+  <button data-section="calendario" style="color:#3498db">📅 Calendario</button>
+  <button data-section="entrenadores" style="color:#2ecc71">👤 Entrenadores</button>
+  <button data-section="fasefinal" style="color:#f39c12">🏆 Fase Final</button>
+</nav>
+
+<section id="clasificacion" class="section active">
+  <table id="tabla-clasificacion">
+    <thead style="background:#d4d4d4;color:#000;font-weight:700;font-size:1.05rem">
+      <tr>
+        <th>#</th><th>Entrenador</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
+      </tr>
+    </thead>
+    <tbody id="cuerpo-clasificacion"></tbody>
+  </table>
+  <div style="display:flex;gap:20px;margin-top:14px;align-items:center;flex-wrap:wrap;font-size:.85rem">
+    <span style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:18px;height:18px;background:rgba(46,204,113,.4);border:2px solid #2ecc71;border-radius:4px"></span> Clasifican a Final Four</span>
+    <span style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:18px;height:18px;background:rgba(231,76,60,.4);border:2px solid #e74c3c;border-radius:4px"></span> Eliminados</span>
+  </div>
+</section>
+
+<section id="calendario" class="section">
+  <div class="actions-bar">
+    <button class="btn btn-primary hidden-si-lectura" onclick="editarResultado()">✏️ Editar resultado</button>
+    <button class="btn emparejar-btn hidden-si-lectura" onclick="editarEmparejamientos()">🔄 Editar emparejamientos</button>
+  </div>
+  <div class="week-selector" id="week-selector"></div>
+  <div id="partidos-semana"></div>
+</section>
+
+<section id="entrenadores" class="section">
+  <div class="actions-bar">
+    <button class="btn btn-success hidden-si-lectura" onclick="agregarEntrenador()">+ Agregar entrenador</button>
+    <button class="btn btn-primary hidden-si-lectura" onclick="reiniciarDatos()">🔄 Reiniciar torneo</button>
+    <button class="btn edit-calendar-btn hidden-si-lectura" onclick="compartirEnlace()">🔗 Compartir enlace</button>
+    <button class="btn btn-success hidden-si-lectura" onclick="configurarGitHub()">⚙️ GitHub</button>
+    <button class="btn btn-primary hidden-si-lectura" onclick="publicarGitHub()" id="btn-publicar" style="display:none">📤 Publicar cambios</button>
+    <button class="btn btn-success hidden-si-lectura" onclick="exportarHTML()">📤 Exportar HTML</button>
+  </div>
+  <div class="entrenador-list" id="lista-entrenadores"></div>
+</section>
+
+<section id="fasefinal" class="section">
+  <div class="actions-bar">
+    <button class="btn btn-primary hidden-si-lectura" onclick="iniciarFaseFinal()" id="btn-iniciar-final">🏆 Iniciar Fase Final</button>
+    <button class="btn edit-calendar-btn hidden-si-lectura" onclick="reiniciarFaseFinal()" id="btn-reiniciar-final" style="display:none">🔄 Reiniciar Fase Final</button>
+  </div>
+  <div id="contenido-fasefinal"></div>
+</section>
+</div>
+
+<div class="modal" id="modal-resultado">
+  <div class="modal-content">
+    <h2>✏️ Editar resultado</h2>
+    <div class="form-group">
+      <label>Partido</label>
+      <select id="sel-partido"></select>
+    </div>
+    <div style="display:flex;gap:15px;align-items:center;justify-content:center;margin:15px 0">
+      <span id="local-label" style="font-weight:600;flex:1;text-align:right"></span>
+      <input type="number" id="goles-local" min="0" max="99" style="width:55px;padding:8px;text-align:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;font-size:1.1em">
+      <span style="color:#f7971e;font-weight:700">-</span>
+      <input type="number" id="goles-visita" min="0" max="99" style="width:55px;padding:8px;text-align:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;font-size:1.1em">
+      <span id="visita-label" style="font-weight:600;flex:1;text-align:left"></span>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-danger" onclick="cerrarModal('modal-resultado')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarResultado()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-pin">
+  <div class="modal-content" style="max-width:360px">
+    <h2>🔐 Desbloquear edición</h2>
+    <p style="color:#aaa;margin-bottom:15px">Introduce el PIN de administrador:</p>
+    <input type="password" id="input-pin" style="width:100%;padding:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;font-size:1.3em;text-align:center;letter-spacing:8px" maxlength="6" onkeydown="if(event.key==='Enter')verificarPIN()">
+    <p id="pin-error" style="color:#e74c3c;margin-top:8px;display:none">PIN incorrecto</p>
+    <div class="modal-buttons">
+      <button class="btn btn-danger" onclick="cerrarModal('modal-pin')">Cancelar</button>
+      <button class="btn btn-primary" onclick="verificarPIN()">Desbloquear</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-github">
+  <div class="modal-content" style="max-width:450px">
+    <h2>⚙️ Configurar GitHub</h2>
+    <p style="color:#aaa;margin-bottom:15px;font-size:.9em">Configura para que los cambios se publiquen automáticamente en GitHub.</p>
+    <div class="form-group"><label>Usuario de GitHub</label><input type="text" id="gh-owner" class="entrenador-input" style="width:100%" placeholder="ej: tuusuario"></div>
+    <div class="form-group"><label>Nombre del repositorio</label><input type="text" id="gh-repo" class="entrenador-input" style="width:100%" placeholder="ej: miduro.github.io"></div>
+    <div class="form-group"><label>Rama (branch)</label><input type="text" id="gh-branch" class="entrenador-input" style="width:100%" value="main" placeholder="main"></div>
+    <div class="form-group"><label>Personal Access Token</label>
+      <input type="password" id="gh-token" class="entrenador-input" style="width:100%;font-family:monospace" placeholder="ghp_...">
+      <p style="color:#888;font-size:.8em;margin-top:4px">Crea un token en GitHub > Settings > Developer settings > Personal access tokens (permiso: repo)</p>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-danger" onclick="cerrarModal('modal-github')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarGitHub()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-playoff">
+  <div class="modal-content" style="max-width:400px">
+    <h2>✏️ Editar resultado</h2>
+    <input type="hidden" id="playoff-ronda">
+    <input type="hidden" id="playoff-idx">
+    <div style="display:flex;gap:15px;align-items:center;justify-content:center;margin:15px 0">
+      <span id="playoff-local-label" style="font-weight:600;flex:1;text-align:right"></span>
+      <input type="number" id="playoff-goles-local" min="0" max="99" style="width:55px;padding:8px;text-align:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;font-size:1.1em">
+      <span style="color:#f7971e;font-weight:700">-</span>
+      <input type="number" id="playoff-goles-visita" min="0" max="99" style="width:55px;padding:8px;text-align:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;font-size:1.1em">
+      <span id="playoff-visita-label" style="font-weight:600;flex:1;text-align:left"></span>
+    </div>
+    <p style="color:#e74c3c;font-size:.85em;text-align:center">No puede haber empate</p>
+    <div class="modal-buttons">
+      <button class="btn btn-danger" onclick="cerrarModal('modal-playoff')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarPlayoff()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-emparejamientos">
+  <div class="modal-content" style="max-width:700px">
+    <h2>🔄 Editar emparejamientos</h2>
+    <p style="color:#aaa;margin-bottom:15px;font-size:.9em">Cada entrenador debe enfrentarse a cada otro una sola vez. Por ronda, cada entrenador juega exactamente un partido.</p>
+    <div id="editor-emparejamientos"></div>
+    <div class="modal-buttons">
+      <button class="btn btn-danger" onclick="cerrarModal('modal-emparejamientos')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEmparejamientos()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PIN = '1221';
+const urlParams = new URLSearchParams(location.search);
+let datos = cargarDatos();
+guardarDatos();
+const esSoloLectura = !urlParams.has('admin') && !sessionStorage.getItem('admin_unlocked');
+
+const COLORES = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#ecf0f1'];
+
+function npcSprite(id) {
+  const i = (id - 1) % 8;
+  const SPRITES = [
+    // Cazabichos Pepo — Bug Catcher
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAMFBMVEX////u7v//1b3Fxc2UlKxzpHukg3O9e2LepHtic1pKWkpSSkpKSmo5MUF7SloAAAA10UB4AAAAAXRSTlMAQObYZgAAAnBJREFUeNrt1tGSgygQhWFUDA3anPd/2z3dSqpmnK2J4NXu/FzkJnzVwWgZ/vrrr/93qpqz6mNcyYuV9UHuOZHcxNXARz2Cz3rrvsRHvCbmJ8BpaqJ5o6Cuy9tbzbsnbt5XcGJmkqPH9huceAfZwN24tXF3QOO8l7xFLXll1MjdA+nNXOZxoXlRVZt2F3TvEPMBIhYNMRLpAOm1CXPOBUcOxz6wedkqr1f1ZeL+xYvhQzA7ZlfAQfdAj/Ud4doiV16Wc028C25v8OTgXCveA8mJlHxibAPUvdZ+CzSu/WVM27aieoDXEbH/7lE7PcMwyVxENVjXEfGxB2xbEkkGqgiu4MRF8HcRXqgTaM95ni8gi837NA2QOh8lvXgc0cSPwQqCVcQ50VTDJVCMn3qAVM0QqSklEeDnLyF8GCQR3AOIEdUwFIBKr7pTAcRYhzwRMTJVt3mGEhcMgDW5yGqldoKl3xPLUJnPalwolpEB3XPRzlIMDKGTVK0JQDXQr0ihZyBDB4lcoPwwFInFpZQG9pDtKYXkVYC3l4l76CRbqOSIY5ooNpCB9Ym+7wAXoIEl57widEePIMPprawMgouH93yl9ItQbeAO+Hzm5X5w31WVXFQawOl1jwhqO1PLfrBhJnaDpjURJrJh7wq6Nw6q3yc06Y2C6tEBuTzsKdDAABaGQIcI7lwIQ1VRRpOge+OgkASMAVRTwqjHamDtAVnHwLl5DRwU08xOoYkyIFbz8O0F4EFwXKzfPIYnwXEx/QuITg/0rsNgDLzsBcHUJdrO64AoiaHHK+Wn00KiWLtAkXIFUUq2bottZ7mI3g3vsvM/2j+PTy2rqoG5RQAAAABJRU5ErkJggg==",
+    // Dominguero Prisma — Picnicker
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAALVBMVEUBAAAAAACIyGhooEAgUCDgsJD42MjIyNBoSEjAiGhwcJD4+PgoOFi4QDjgaIjQHqRfAAAAAXRSTlMAQObYZgAAAbpJREFUeNrt1keC5SAMRVGeAkhge//LbVQuOkyNOvv+ODrOQHl7e3v7g2JmzERyOGFaiWR6ESMDZB5jtFSwTfEGE0QRjm4vARS6u92UPQxqkQleOUwdwAcJpIDDVFWioyeARQdqVQw97OgZotbIhqp5Bnh4rWFqlLGLB2o9T5uaKVLAw1zPU91wTPBA2Q9wN4MULC6DBAuyOBGGMAsRcjySMzwmkiSQzUQ4QoJnQnYJ0eR6b9j3jOm8mELszR3Y5NSJrgBZgAmaGZ5zrqrC53UJM8cVAaxWxSPMPjjFAqdifj/UeMLpzaFAzusMEMFVdTzxNAoujlKu8G7N8fBRM3W7/wpaA1C91ofaMtesx4Awm6urle2YmGh6RDBL8IQC5KxlSIDBMUXI8FpY/AG2hgRwjNGYhVr8SRlqvI+B6faUKTlA9w7pff7mgLVqSJYI1oB8wsjw9BOM31TQ568lgb4O2bHt9eGqN6PqLQNs45PprbeGfXCMXj7BGRK8sZAQewLYULJ2MYx1xEvErreInGNmEfkeZNncRW6tiZTV5GQLlB8nEmFmkS2Qg/gGRjtgEMB3AKJH0Nvb29sXmNAPXsNdGJAAAAAASUVORK5CYII=",
+    // Pokemanicao Pichin — Pokémaniac (Gen2)
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAD1BMVEUAAAAAAABoKJDgoGj4+Pghy6PlAAAAAXRSTlMAQObYZgAAAbhJREFUeNrs1NGKpTAURFH3rvP/3zx0a0FgZqBN+vEWIjHgovSI114++eSTT/g+q+AviUt+n7w2In9tNCjvvRn+6+2UJAn/8hrPQKEkwnFFcRgYwAAD7ol3FbyEejM7FcEkzJeq/WgwDjugM0niXbNDwSQzQ96CTPjW9L6z3h0SeOcZEpLgAj6V89a7iAkS4O7YgnQ2vhaVO10BzxtEtSBw+QMRYEbsAULamW8QLlTCD3sOWhG8xcVL0FF488cSqPiwPAJhBNvwlarQwioFB4YXYEkR6URcxaENX5Fygw/HlwgJ1HsXRAWoJyiJcG2kkvC4XcC1B1oQAUAF3AXlBit2ud2vDSuqAGxyLqAgoMD2NHg8sL8GgA2MOgUVdbdaFVxBtkAq0IFQGtgBARTrYUE3wTrYFHRvvFVcClaUbRDqCe6DFaGsAp6Cq3cOSr0WJOCBCNT7NRBW0HgAVkRpweQIrIjHYCPc8m+BDU0EQAoeiYt8HYaZlhJITkU18cET5bygFtSEczD2Ypw5A9ExNRznTGRm1BKMKmfeZHltODNyBgLrxtkz/xm0e0yZgYQbtAzDHoyCUTAKAClGCReqDR4uAAAAAElFTkSuQmCC",
+    // Montañero Andy — Hiker
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAUVBMVEUAAAAAAAA1JCQsNyupeF/ZoXhLUFdfa0d9ZVN4RldQOBiGo17AMCjCjVhIgDj40brgqFBGNS0kX0/74sr4UEB40GA7SzmYaCD////kt4VQUFAZ484VAAAAAXRSTlMAQObYZgAAA1ZJREFUeF7t1dlu20AMhWEfzqJd3pO27/+gPaQ4ENS66MhK7/ojsaEA+cIxZee09L//9X3/tdrlcvkykprXg8A8H/SM+3QSp/k505yPgx6ez3nm9zHwkzk5P8k9cchzazHngx5BMp7S7h2ckDlLEQe9Qrn6+SbXdeuKYZUz4z3u3BUPyDmnlKG9OWEXz93YmQfQouePSmK/d1Yvdeq1PZF0Z2mxSfb7vRi7mHASads+fst3K3+LBJNQ3A2yjuBJwXu664TJvgiihYOi1YGp61KCqNgrFmNUNN5TRtu2smi2ddSIiQdOEZ+iQ2Q6VoykEyD0qGl9LZgIgvexPB4EOSFTNieMI+hd3KsTCRZvfCBT9HLGyIBLASmiYilpObDIgyEr+YOaeUxu2AOGEBODNA1BEz0U70bRvBowDCGpCPUsARZuEvX4g92geQRH86ZpApvoPegpKAMMVBJ/8wroE47STp5euzcMqFwywYZiwHriqSXJB925Rc/Enl4FyNFCaEDPE+N8Pgc11HgUG20FR4JWAUeufwErNsJgHlnfiXu2kiWCLtKrCHZk28kWfKxgEbNUiSRtwFG3MDrIy3JkUTKE4GAlGShYK0iRqH5cRgkcMCBTrCWzyOp9Z+L+2YpByVpRRHKWQQmh5oldp3NcxHNQsEqkpt7QECa0RrFLXTovpSJKzYQSBt1kINO27Tpk1y0zdikZiMykwgyDg655QVIE1yKRHm8enJAtqXi/mPdLYdB7BoDfq9D9VZw6EPsDyMlZQKPhBgKoeUPTCy9BZtNBuxGsKgwfw59Bcizc2E6Q3isxfND72Ac2Czi9BpuPJjR7QZ5pwDRNL0HbcagHORsbDGxZ0eiXF3EX6He1gVarUTsOwkhvCzLz9oEiAKRgdjGYGGhWgwyAgRANnmjD0k6QLYIh5XkL4rYTdGQLugjmXnWAvAb98PtBkdeiB/eqw/V6/Q2EXJlPSG8vyBbJVwzlnATo7QfZYhl8XXNtP8iEJNhxsCQC29L1AMjk34Lsy0HIMRAb79+AcsQrE0HzmQGfGe+Bg7CGFdD/vfP5TZA1G9B7H9z+No54DFoBt+KBnQi24PsvIcqnC/D7H3kXlHIXlnDkPkTptAFFK+DxAJio4Bea+Iv3ExIXaBPJTzg+AAAAAElFTkSuQmCC",
+    // Guay Mario — Cool Trainer (Ace Trainer)
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAALVBMVEX///8AAABiSkFBMUFilFJBakoxQTmLUlLNe1r/1b3epHt7SlreWjm9e2L///+Ze4QNAAAAAXRSTlMAQObYZgAAAepJREFUeNrt2MEO4joMRmGfmDg0pX3/x72JyRR1pNlgi9U9QiJC6qe/IDaV//tRNkrVHiM30zQvw7Q6u8BazRIHulhjonN54Jr3uesaA80lxzw/Rj2zD+fH0B3jxsqCngfO2Kge5islFrVOzLDe3TOJi732jRObHgkTt6NuWzv7nNdJmLgd26r3A4nH1i4RyYg/4JEECgytHT3Jc7H13huSFa2BSl40Vci84da0PZ9kzZvec5QjooN7g03zwCeq40AG2KaIjsgAaR8QTQPRUpQscIiUmUJYpAyQhmp5BwRBdbBc4jhFUKaAPgEWOd86Aa8g63/iqrN7JzBQhDZB/zezn+fJtvOtp4U7eO6v12tDvgbxwwKb6PDOV2TgDXyK6BioEhzooIvjvO+7fA++PbMFNiQQZYFWZ232IAYiF/jwckDQDJBygaqoqntRkAVS3infe72VozFPvjAOtt76GgjXRCQwkesrVFigSkCU5XkJE+X3YMgT0kHNEVleOniJRD2Wlw9SXCTuXQvTwGVwgfFfxKPkg1GR5WVNRPNB9+6gBkC7g4JqZCH+3OYG+hMSAqCN1x0cBUGSwfvVFgNvAz1qAKT+A7QQaNw/GhlfgmZ/X44tkcCDtDu4xMd3IgL3MWBm68fPCjCQn/UfWcASqa68HrgAAAAASUVORK5CYII=",
+    // Lider Manu — Gym Leader (Brock)
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAALVBMVEUBAAAAAAB4mGBISFB4WFB4gIBYcEiowIjgsJDAkHD42MjgoFCoaBjQkHDw8PDyrOS1AAAAAXRSTlMAQObYZgAAAf9JREFUeNrt1VcC4yAMhGEGCRnbkPsfd0ek5xG0PX96+yJS7PTt218TeNJATHeApxCOGK195wkIAhX7SBUBpup+Sz2sj/cORgzoBz9DwIAMtKrPiaohIvRQglVrDfsQD69y0JAJtdchcsIa4LHaleKuPmGNAKmNOGEPAVN1bYAaA6qD3g6kkPqx78r5kKLSygQpLBEVKXGga1spDQjRtJ1NSpHWzlMQsNp2skaO6fK6Odrp7edgOWgM2M6RFilY9Yq6dB+wiGDJo+goT4w3l0h67+AQ2ayoUhhupge/UbTPgn1M8wRFXJTeO+a83kkkYWUcRFKC+P1V5zYIYzfcbmK7/U+0HscsWCmA4BDPJnCxH2xmzb0yVchVbLxA16Tu6fRWEP0NhC54FBVHV3mGWvu8xwAcePV674dibWsI3DlA13f1qMhmMJazIWA/CkIZ+RaQVjN3jIe8bZshxYAZRi4SzNhGwSBDGJifYIRnMOfM1sGN2nB4nkmugjlvPGQHQ9ZMZohwe4C2Cj4mjBmRIL0HmNdB0BvgEAP+fnhOmMw2WwYtj3DTOaTlFZHE0+MtFgHaG2hYWrGxx0ywERYGfFsyb487FkC7ge+3cZkFL+oLfoJ+i2GWA1prArPnhAbINAi5hgdArTXyk6GIlFKAz/eYF0ef7yEFKS546du3/68fCAcUxcuLQfIAAAAASUVORK5CYII=",
+    // Alto Mando Davo — Elite Four (Will)
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAD1BMVEUBAAAAAADQIBC4eEj4+PjJFfrzAAAAAXRSTlMAQObYZgAAAUxJREFUeNrt1cFqHDEQAFG9kv7/m+OsswLHvkxGAYO3bnN5dKOGGa9evfppcdgrR81WdI60VqlTJK1WOkRKVXrkvldKaR0AtcFHK7dBEU/3AIgiDoBDQkhHRGtBa3EZxJd3zXoLuiRa5QsQ796cXAAVX4h2TVxaePEZnObvaBpXsljL+CzGnDCuZX3wdsw5t3b7lffhwLhRgQpAXRftZpMUCuqqiPlW6N1LQahyCTTfQ0VVICh0TTQ9wU1CsL9dG5IBtkWBHilXQH/dkA1C6traxsc2+O67Ln4JYg9cuQuyQXf/piH4g4hboBQ9EXALnD2zQf8ONtuifak3QE0fQM233NpYbdB0E2yLPRTuT9gGH/knb+cTOBhnwDZ0F8yPAocN+q7gFhnHRJW+LZj/AirjlFiScQ50FBxQnPRwDLQ6LZJVGQeD8QN69erVL3tWBgtvcullAAAAAElFTkSuQmCC",
+    // Maestro Pape — Champion (Blue)
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAALVBMVEUBAAAAAABwUIAwQFBoeIDAeAhoSEiYaKjYoEjAiGjIiPjosJD42Mj4+PjAyLADn/0eAAAAAXRSTlMAQObYZgAAAbtJREFUeNrt1gd24DgMg2FCsiHRcnz/4y5kpb9ucqf/U9K/B6bbv/71V0dbgUngvri9J4EQBHG9Z13cF7dnDARN2L4iue/xc6FtHzEMdnaJbyYsGoXdokhmjERXQvqbCIRvXhbX/4zfLG8u4/xP/8IgOujc++7OLpFhj4MOcHdckuOewHHixd35MvhoIfD1Ked5Ch3q0T6cn0UF+ql8DDzyyFEAV/YaKE6XO554Y2hKaUWbRGJWt22jDz4b6MPpLlAJhzCB1QF7FkhdWACf4BA2xTpQEfouqGQuUFWvFbBw0LZF6gGqxQOgg+9kW0pATQWVzl0hCUQVmQ3eZs0ExVVYUm8LYbk3r4lkLgiMsLip69LFwAYOPxH0XmbXdkH56cOD4KXmwKowuZyBF26Qk8sELaHrBreCojJEbDMkgq2Vpn8lCxTTjqOthUzwjqMcApE1sQgTWNJAIYdC5kLVYEtkHGwTLGYpE/NBeQJbMZUJSlkTW0HY09+FQF6jJYDl1ZtgC3sKn0BGQRnlM4iw93mhQs7ALLFILJkg5H0FG2CRPntTjP6Ggxv4JKIqRMDvAJQFAqb3r3/961fuP+yxETqUeB2EAAAAAElFTkSuQmCC",
+  ];
+  return `<img src="${SPRITES[i]}" class="npc-sprite" alt="">`;
+}
+
+function datosDefault() {
+  return {
+    entrenadores: [
+      { id: 1, nombre: 'Cazabichos Pepo' },
+      { id: 2, nombre: 'Dominguero Prisma' },
+      { id: 3, nombre: 'Pokemanicao Pichin' },
+      { id: 4, nombre: 'Montañero Andy' },
+      { id: 5, nombre: 'Entrenador Guay Mario' },
+      { id: 6, nombre: 'Lider Manu' },
+      { id: 7, nombre: 'Alto Mando Davo' },
+      { id: 8, nombre: 'Maestro Pape' },
+    ],
+    partidos: generarCalendario(8),
+    playoffs: { activo: false, semis: [{ local: null, visita: null, golesLocal: null, golesVisita: null }, { local: null, visita: null, golesLocal: null, golesVisita: null }], final: { local: null, visita: null, golesLocal: null, golesVisita: null } },
+    posicionesPrevias: {},
+  };
+}
+
+function generarCalendario(n) {
+  const ids = Array.from({ length: n }, (_, i) => i + 1);
+  const rondas = [];
+  const total = n - 1;
+  const mid = n / 2;
+
+  for (let r = 0; r < total; r++) {
+    const ronda = [];
+    for (let i = 0; i < mid; i++) {
+      const local = ids[i];
+      const visita = ids[n - 1 - i];
+      if (local !== visita) {
+        ronda.push({ local, visita, golesLocal: null, golesVisita: null });
+      }
+    }
+    rondas.push(ronda);
+    ids.splice(1, 0, ids.pop());
+  }
+  return rondas;
+}
+
+function cargarDatos() {
+  const dParam = new URLSearchParams(location.search).get('d');
+  if (dParam) {
+    try {
+      const dec = decodificarDatosCompacto(dParam);
+      if (dec) return dec;
+    } catch (e) {}
+  }
+  try {
+    const raw = localStorage.getItem('liguilla_pokemon');
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (d.entrenadores && d.partidos) return d;
+    }
+  } catch (e) {}
+  return datosDefault();
+}
+
+function codificarDatosCompacto() {
+  const n = datos.entrenadores.length;
+  const nombres = datos.entrenadores.map(e => e.nombre).join('|');
+  const rondas = datos.partidos.map(ronda =>
+    ronda.map(p => {
+      const gl = p.golesLocal !== null ? p.golesLocal : '';
+      const gv = p.golesVisita !== null ? p.golesVisita : '';
+      return `${p.local}-${p.visita}-${gl}-${gv}`;
+    }).join(',')
+  ).join(';');
+  return `${n}:${nombres}:${rondas}`;
+}
+
+function decodificarDatosCompacto(str) {
+  const partes = str.split(':');
+  if (partes.length < 3) return null;
+  const n = parseInt(partes[0]);
+  const nombres = partes[1].split('|');
+  if (nombres.length !== n) return null;
+  const rondasRaw = partes.slice(2).join(':').split(';');
+  const entrenadores = nombres.map((nom, i) => ({ id: i + 1, nombre: nom }));
+  const partidos = rondasRaw.map(rondaStr => {
+    if (!rondaStr) return [];
+    return rondaStr.split(',').map(matchStr => {
+      const p = matchStr.split('-');
+      return { local: parseInt(p[0]), visita: parseInt(p[1]), golesLocal: p[2] !== '' ? parseInt(p[2]) : null, golesVisita: p[3] !== '' ? parseInt(p[3]) : null };
+    });
+  });
+  return { entrenadores, partidos };
+}
+
+function guardarDatos() {
+  localStorage.setItem('liguilla_pokemon', JSON.stringify(datos));
+}
+
+function obtenerEntrenador(id) {
+  return datos.entrenadores.find(e => e.id === id);
+}
+
+function renderizarClasificacion() {
+  const stats = {};
+  datos.entrenadores.forEach(e => {
+    stats[e.id] = { id: e.id, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, dg: 0, pts: 0 };
+  });
+
+  datos.partidos.forEach(ronda => {
+    ronda.forEach(p => {
+      if (p.golesLocal === null || p.golesVisita === null) return;
+      const l = stats[p.local], v = stats[p.visita];
+      l.pj++; v.pj++;
+      l.gf += p.golesLocal; l.gc += p.golesVisita;
+      v.gf += p.golesVisita; v.gc += p.golesLocal;
+      if (p.golesLocal > p.golesVisita) { l.g++; v.p++; l.pts += 1; }
+      else if (p.golesLocal < p.golesVisita) { v.g++; l.p++; v.pts += 1; }
+      else { l.e++; v.e++; l.pts++; v.pts++; }
+    });
+  });
+
+  Object.values(stats).forEach(s => { s.dg = s.gf - s.gc; });
+
+  const ordenados = Object.values(stats).sort((a, b) =>
+    b.pts - a.pts || b.dg - a.dg || b.gf - a.gf
+  );
+
+  const tbody = document.getElementById('cuerpo-clasificacion');
+  tbody.innerHTML = ordenados.map((s, i) => {
+    const e = obtenerEntrenador(s.id);
+    const cls = i < 4 ? `top4 pos-${i + 1}` : 'bottom4';
+    const prev = datos.posicionesPrevias?.[s.id];
+    let flecha = '';
+    if (prev !== undefined) {
+      if (i < prev) flecha = '<span style="color:#2ecc71">▲</span> ';
+      else if (i > prev) flecha = '<span style="color:#e74c3c">▼</span> ';
+      else flecha = '<span style="color:#666">―</span> ';
+    }
+    return `<tr class="${cls}">
+      <td>${flecha}${i + 1}</td>
+      <td><span style="color:${COLORES[(s.id - 1) % COLORES.length]};font-weight:600">${e ? e.nombre : '?'}</span> ${npcSprite(s.id)}</td>
+      <td>${s.pj}</td><td>${s.g}</td><td>${s.e}</td><td>${s.p}</td>
+      <td>${s.gf}</td><td>${s.gc}</td><td>${s.dg > 0 ? '+' : ''}${s.dg}</td>
+      <td><strong>${s.pts}</strong></td>
+    </tr>`;
+  }).join('');
+  datos.posicionesPrevias = {};
+  ordenados.forEach((s, i) => { datos.posicionesPrevias[s.id] = i; });
+  guardarDatos();
+}
+
+function renderizarCalendario() {
+  const cont = document.getElementById('week-selector');
+  cont.innerHTML = datos.partidos.map((_, i) =>
+    `<button class="week-btn${i === 0 ? ' active' : ''}" onclick="mostrarSemana(${i})">Ronda ${i + 1}</button>`
+  ).join('');
+  mostrarSemana(0);
+}
+
+function mostrarSemana(idx) {
+  document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.week-btn')[idx]?.classList.add('active');
+
+  const div = document.getElementById('partidos-semana');
+  const ronda = datos.partidos[idx];
+  if (!ronda) { div.innerHTML = '<p>No hay partidos en esta ronda.</p>'; return; }
+
+  div.innerHTML = ronda.map(p => {
+    const local = obtenerEntrenador(p.local);
+    const visita = obtenerEntrenador(p.visita);
+    const hayResultado = p.golesLocal !== null;
+    return `<div class="match-card">
+      <span class="round-badge">Ronda ${idx + 1}</span>
+      <div class="teams">
+        <span style="color:${COLORES[(p.local - 1) % COLORES.length]}"><strong>${local ? local.nombre : '?'}</strong></span>
+        <span class="vs">VS</span>
+        <span style="color:${COLORES[(p.visita - 1) % COLORES.length]}"><strong>${visita ? visita.nombre : '?'}</strong></span>
+      </div>
+      <div class="score">
+        ${hayResultado
+          ? `<span style="font-size:1.3em;font-weight:700">${p.golesLocal} - ${p.golesVisita}</span>`
+          : '<span style="color:#666">Pendiente</span>'
+        }
+        ${esSoloLectura ? '' : `<button class="btn btn-sm edit-calendar-btn" onclick="abrirEdicion(${idx},${p.local},${p.visita})">Editar</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderizarEntrenadores() {
+  const div = document.getElementById('lista-entrenadores');
+  div.innerHTML = datos.entrenadores.map(e =>
+    `<div class="entrenador-item">
+      <span class="color-dot" style="background:${COLORES[(e.id - 1) % COLORES.length]}"></span>
+      <input class="entrenador-input" value="${e.nombre}" data-id="${e.id}" onchange="cambiarNombre(${e.id}, this.value)">
+      <span class="edit-icon" onclick="this.previousElementSibling.focus()">✏️</span>
+    </div>`
+  ).join('');
+}
+
+function cambiarNombre(id, nombre) {
+  const e = datos.entrenadores.find(x => x.id === id);
+  if (e) { e.nombre = nombre.trim() || e.nombre; guardarDatos(); renderizarTodo(); }
+}
+
+function agregarEntrenador() {
+  if (datos.entrenadores.length >= 12) { alert('Máximo 12 entrenadores.'); return; }
+  const nuevoId = Math.max(...datos.entrenadores.map(e => e.id)) + 1;
+  datos.entrenadores.push({ id: nuevoId, nombre: `Entrenador ${nuevoId}` });
+  datos.partidos = generarCalendario(datos.entrenadores.length);
+  guardarDatos();
+  renderizarTodo();
+}
+
+function reiniciarDatos() {
+  if (!confirm('¿Reiniciar todo el torneo? Se perderán todos los resultados.')) return;
+  datos = datosDefault();
+  guardarDatos();
+  renderizarTodo();
+}
+
+function editarResultado() {
+  const sel = document.getElementById('sel-partido');
+  sel.innerHTML = '';
+  datos.partidos.forEach((ronda, ri) => {
+    ronda.forEach(p => {
+      const l = obtenerEntrenador(p.local);
+      const v = obtenerEntrenador(p.visita);
+      const opt = document.createElement('option');
+      opt.value = `${ri},${p.local},${p.visita}`;
+      opt.textContent = `R${ri + 1}: ${l ? l.nombre : '?'} vs ${v ? v.nombre : '?'}`;
+      sel.appendChild(opt);
+    });
+  });
+  actualizarLabelsEdicion();
+  document.getElementById('modal-resultado').classList.add('active');
+}
+
+function abrirEdicion(ronda, local, visita) {
+  const sel = document.getElementById('sel-partido');
+  sel.innerHTML = '';
+  datos.partidos.forEach((rondaArr, ri) => {
+    rondaArr.forEach(p => {
+      const l = obtenerEntrenador(p.local);
+      const v = obtenerEntrenador(p.visita);
+      const opt = document.createElement('option');
+      opt.value = `${ri},${p.local},${p.visita}`;
+      opt.textContent = `R${ri + 1}: ${l ? l.nombre : '?'} vs ${v ? v.nombre : '?'}`;
+      sel.appendChild(opt);
+    });
+  });
+  sel.value = `${ronda},${local},${visita}`;
+  actualizarLabelsEdicion();
+  document.getElementById('modal-resultado').classList.add('active');
+}
+
+function actualizarLabelsEdicion() {
+  const val = document.getElementById('sel-partido').value;
+  if (!val) return;
+  const [ri, localId, visitaId] = val.split(',').map(Number);
+  const local = obtenerEntrenador(localId);
+  const visita = obtenerEntrenador(visitaId);
+  document.getElementById('local-label').textContent = local ? local.nombre : '?';
+  document.getElementById('visita-label').textContent = visita ? visita.nombre : '?';
+
+  const ronda = datos.partidos[ri];
+  const partido = ronda.find(p => p.local === localId && p.visita === visitaId);
+  document.getElementById('goles-local').value = partido.golesLocal !== null ? partido.golesLocal : '';
+  document.getElementById('goles-visita').value = partido.golesVisita !== null ? partido.golesVisita : '';
+}
+
+document.getElementById('sel-partido')?.addEventListener('change', actualizarLabelsEdicion);
+
+function guardarResultado() {
+  const val = document.getElementById('sel-partido').value;
+  if (!val) return;
+  const [ri, localId, visitaId] = val.split(',').map(Number);
+  const gl = parseInt(document.getElementById('goles-local').value);
+  const gv = parseInt(document.getElementById('goles-visita').value);
+
+  if (isNaN(gl) || isNaN(gv) || gl < 0 || gv < 0) {
+    alert('Ingresa goles válidos (0 o más).');
+    return;
+  }
+
+  const ronda = datos.partidos[ri];
+  const partido = ronda.find(p => p.local === localId && p.visita === visitaId);
+  if (partido) {
+    partido.golesLocal = gl;
+    partido.golesVisita = gv;
+    guardarDatos();
+    renderizarTodo();
+    cerrarModal('modal-resultado');
+  }
+}
+
+function editarEmparejamientos() {
+  let html = '';
+  datos.partidos.forEach((ronda, ri) => {
+    html += `<div class="ronda-editor"><h3>Ronda ${ri + 1}</h3>`;
+    const usadosEnRonda = new Set();
+    ronda.forEach((p, pi) => {
+      const localVal = p.local;
+      const visitaVal = p.visita;
+      html += `<div class="match-editor-row" data-ronda="${ri}" data-partido="${pi}">
+        <select class="select-editor sel-local" style="flex:1" data-ronda="${ri}" data-partido="${pi}" data-bando="local">`;
+      datos.entrenadores.forEach(e => {
+        const selected = e.id === localVal ? 'selected' : '';
+        const disabled = (e.id === visitaVal) ? 'disabled' : '';
+        html += `<option value="${e.id}" ${selected} ${disabled}>${e.nombre}</option>`;
+      });
+      html += `</select>
+        <span class="vs-sm">VS</span>
+        <select class="select-editor sel-visita" style="flex:1" data-ronda="${ri}" data-partido="${pi}" data-bando="visita">`;
+      datos.entrenadores.forEach(e => {
+        const selected = e.id === visitaVal ? 'selected' : '';
+        const disabled = (e.id === localVal) ? 'disabled' : '';
+        html += `<option value="${e.id}" ${selected} ${disabled}>${e.nombre}</option>`;
+      });
+      html += `</select></div>`;
+    });
+    html += `</div>`;
+  });
+  document.getElementById('editor-emparejamientos').innerHTML = html;
+
+  document.querySelectorAll('.sel-local').forEach(sel => {
+    sel.addEventListener('change', function() {
+      const ri = parseInt(this.dataset.ronda);
+      const pi = parseInt(this.dataset.partido);
+      const ronda = datos.partidos[ri];
+      if (!ronda[pi]) return;
+      ronda[pi].local = parseInt(this.value);
+      recargarEditorRonda(ri);
+    });
+  });
+  document.querySelectorAll('.sel-visita').forEach(sel => {
+    sel.addEventListener('change', function() {
+      const ri = parseInt(this.dataset.ronda);
+      const pi = parseInt(this.dataset.partido);
+      const ronda = datos.partidos[ri];
+      if (!ronda[pi]) return;
+      ronda[pi].visita = parseInt(this.value);
+      recargarEditorRonda(ri);
+    });
+  });
+
+  document.getElementById('modal-emparejamientos').classList.add('active');
+}
+
+function recargarEditorRonda(ri) {
+  const ronda = datos.partidos[ri];
+  const divs = document.querySelectorAll(`.match-editor-row[data-ronda="${ri}"]`);
+  const usados = new Set();
+  ronda.forEach(p => { usados.add(p.local); usados.add(p.visita); });
+
+  divs.forEach((div, pi) => {
+    const p = ronda[pi];
+    if (!p) return;
+    const selLocal = div.querySelector('.sel-local');
+    const selVisita = div.querySelector('.sel-visita');
+    const valLocal = p.local;
+    const valVisita = p.visita;
+
+    selLocal.innerHTML = '';
+    selVisita.innerHTML = '';
+    datos.entrenadores.forEach(e => {
+      const optL = document.createElement('option');
+      optL.value = e.id;
+      optL.textContent = e.nombre;
+      if (e.id === valLocal) optL.selected = true;
+      if (e.id === valVisita) optL.disabled = true;
+      selLocal.appendChild(optL);
+
+      const optV = document.createElement('option');
+      optV.value = e.id;
+      optV.textContent = e.nombre;
+      if (e.id === valVisita) optV.selected = true;
+      if (e.id === valLocal) optV.disabled = true;
+      selVisita.appendChild(optV);
+    });
+  });
+}
+
+function guardarEmparejamientos() {
+  for (let ri = 0; ri < datos.partidos.length; ri++) {
+    const ronda = datos.partidos[ri];
+    const vistos = new Set();
+    for (const p of ronda) {
+      if (p.local === p.visita) {
+        alert(`Ronda ${ri + 1}: un entrenador no puede enfrentarse a sí mismo.`);
+        return;
+      }
+      if (vistos.has(p.local) || vistos.has(p.visita)) {
+        alert(`Ronda ${ri + 1}: cada entrenador solo puede jugar una vez por ronda.`);
+        return;
+      }
+      vistos.add(p.local);
+      vistos.add(p.visita);
+    }
+  }
+  const pares = new Set();
+  for (let ri = 0; ri < datos.partidos.length; ri++) {
+    for (const p of datos.partidos[ri]) {
+      const key = `${Math.min(p.local, p.visita)}-${Math.max(p.local, p.visita)}`;
+      if (pares.has(key)) {
+        alert(`El enfrentamiento ya existe en otra ronda. Cada duelo solo puede ocurrir una vez.`);
+        return;
+      }
+      pares.add(key);
+    }
+  }
+  guardarDatos();
+  renderizarTodo();
+  cerrarModal('modal-emparejamientos');
+}
+
+function obtenerClasificacion() {
+  const stats = {};
+  datos.entrenadores.forEach(e => { stats[e.id] = { id: e.id, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, dg: 0, pts: 0 }; });
+  datos.partidos.forEach(r => r.forEach(p => {
+    if (p.golesLocal === null) return;
+    const l = stats[p.local], v = stats[p.visita];
+    l.pj++; v.pj++;
+    l.gf += p.golesLocal; l.gc += p.golesVisita;
+    v.gf += p.golesVisita; v.gc += p.golesLocal;
+    if (p.golesLocal > p.golesVisita) { l.g++; v.p++; l.pts += 3; }
+    else if (p.golesLocal < p.golesVisita) { v.g++; l.p++; v.pts += 3; }
+    else { l.e++; v.e++; l.pts++; v.pts++; }
+  }));
+  Object.values(stats).forEach(s => { s.dg = s.gf - s.gc; });
+  return Object.values(stats).sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
+}
+
+function iniciarFaseFinal() {
+  const clasif = obtenerClasificacion();
+  if (clasif.length < 4) { alert('Se necesitan al menos 4 entrenadores.'); return; }
+  const ids = clasif.map(s => s.id);
+  datos.playoffs = {
+    activo: true,
+    semis: [
+      { local: ids[0], visita: ids[3], golesLocal: null, golesVisita: null },
+      { local: ids[1], visita: ids[2], golesLocal: null, golesVisita: null },
+    ],
+    final: { local: null, visita: null, golesLocal: null, golesVisita: null },
+  };
+  guardarDatos();
+  renderizarTodo();
+}
+
+function reiniciarFaseFinal() {
+  if (!confirm('¿Reiniciar la fase final? Se perderán los resultados.')) return;
+  datos.playoffs.activo = false;
+  datos.playoffs.semis.forEach(s => { s.golesLocal = null; s.golesVisita = null; });
+  datos.playoffs.final = { local: null, visita: null, golesLocal: null, golesVisita: null };
+  guardarDatos();
+  renderizarTodo();
+}
+
+function renderizarFaseFinal() {
+  const div = document.getElementById('contenido-fasefinal');
+  const btnIniciar = document.getElementById('btn-iniciar-final');
+  const btnReiniciar = document.getElementById('btn-reiniciar-final');
+
+  if (!datos.playoffs || !datos.playoffs.activo) {
+    btnIniciar.style.display = '';
+    btnReiniciar.style.display = 'none';
+    div.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px">La liguilla aún no ha terminado. Cuando esté lista, inicia la Fase Final.</p>';
+    return;
+  }
+
+  btnIniciar.style.display = 'none';
+  btnReiniciar.style.display = '';
+
+  const semis = datos.playoffs.semis;
+  const final = datos.playoffs.final;
+
+  const s1 = semis[0], s2 = semis[1];
+  const e1 = obtenerEntrenador(s1.local), e2 = obtenerEntrenador(s1.visita);
+  const e3 = obtenerEntrenador(s2.local), e4 = obtenerEntrenador(s2.visita);
+
+  const s1Completa = s1.golesLocal !== null;
+  const s2Completa = s2.golesLocal !== null;
+  const finalCompleta = final.golesLocal !== null;
+
+  let ganadorS1 = null, ganadorS2 = null;
+  if (s1Completa) ganadorS1 = s1.golesLocal > s1.golesVisita ? s1.local : s1.visita;
+  if (s2Completa) ganadorS2 = s2.golesLocal > s2.golesVisita ? s2.local : s2.visita;
+
+  const finalista1 = final.local ? obtenerEntrenador(final.local) : null;
+  const finalista2 = final.visita ? obtenerEntrenador(final.visita) : null;
+
+  div.innerHTML = `
+    <div class="bracket">
+      <div class="bracket-round">
+        <h3>Semifinales</h3>
+        <div class="bracket-match">
+          <div class="team-row ${s1Completa && ganadorS1 === s1.local ? 'winner' : ''}">
+            <span class="pokeball-dot" style="background:${COLORES[(s1.local - 1) % COLORES.length]}"></span>
+            <span class="name">${e1 ? e1.nombre : '?'}</span>
+            <span class="score">${s1Completa ? s1.golesLocal : '-'}</span>
+          </div>
+          <div class="team-row ${s1Completa && ganadorS1 === s1.visita ? 'winner' : ''}">
+            <span class="pokeball-dot" style="background:${COLORES[(s1.visita - 1) % COLORES.length]}"></span>
+            <span class="name">${e2 ? e2.nombre : '?'}</span>
+            <span class="score">${s1Completa ? s1.golesVisita : '-'}</span>
+          </div>
+          <button class="btn btn-sm edit-calendar-btn hidden-si-lectura" onclick="editarPlayoff('semis',0)" style="margin-top:8px">✏️ Editar</button>
+        </div>
+        <div class="bracket-match">
+          <div class="team-row ${s2Completa && ganadorS2 === s2.local ? 'winner' : ''}">
+            <span class="pokeball-dot" style="background:${COLORES[(s2.local - 1) % COLORES.length]}"></span>
+            <span class="name">${e3 ? e3.nombre : '?'}</span>
+            <span class="score">${s2Completa ? s2.golesLocal : '-'}</span>
+          </div>
+          <div class="team-row ${s2Completa && ganadorS2 === s2.visita ? 'winner' : ''}">
+            <span class="pokeball-dot" style="background:${COLORES[(s2.visita - 1) % COLORES.length]}"></span>
+            <span class="name">${e4 ? e4.nombre : '?'}</span>
+            <span class="score">${s2Completa ? s2.golesVisita : '-'}</span>
+          </div>
+          <button class="btn btn-sm edit-calendar-btn hidden-si-lectura" onclick="editarPlayoff('semis',1)" style="margin-top:8px">✏️ Editar</button>
+        </div>
+      </div>
+      <div class="bracket-round final-round">
+        <h3>🏆 Final</h3>
+        <div class="final-match">
+          ${finalista1 || finalista2 ? `
+            <div class="team-row ${finalCompleta && final.golesLocal !== null && final.golesLocal > final.golesVisita ? 'winner' : ''}">
+              <span class="pokeball-dot" style="background:${finalista1 ? COLORES[(final.local - 1) % COLORES.length] : '#666'}"></span>
+              <span class="name">${finalista1 ? finalista1.nombre : '—'}</span>
+              <span class="score">${finalCompleta ? final.golesLocal : '-'}</span>
+            </div>
+            <div class="team-row ${finalCompleta && final.golesVisita !== null && final.golesVisita > final.golesLocal ? 'winner' : ''}">
+              <span class="pokeball-dot" style="background:${finalista2 ? COLORES[(final.visita - 1) % COLORES.length] : '#666'}"></span>
+              <span class="name">${finalista2 ? finalista2.nombre : '—'}</span>
+              <span class="score">${finalCompleta ? final.golesVisita : '-'}</span>
+            </div>
+          ` : s1Completa && s2Completa ? '<p style="color:#aaa">Esperando a que edites los resultados de la final...</p>' : '<p style="color:#666">Pendiente de semifinales</p>'}
+          ${finalista1 && finalista2 ? `<button class="btn btn-sm edit-calendar-btn hidden-si-lectura" onclick="editarPlayoff('final',0)" style="margin-top:8px">✏️ Editar</button>` : ''}
+          ${finalCompleta ? '<div style="margin-top:12px;padding:8px;background:rgba(255,215,0,.15);border-radius:8px"><span class="trophy-icon">🏆</span> <strong style="color:#ffd200">' + (final.golesLocal > final.golesVisita ? (finalista1 ? finalista1.nombre : '') : (finalista2 ? finalista2.nombre : '')) + '</strong> ¡Campeón!</div>' : ''}
+        </div>
+      </div>
+    </div>`;
+
+  if (s1Completa && s2Completa && (!final.local || !final.visita)) {
+    const fid1 = ganadorS1, fid2 = ganadorS2;
+    if (fid1 && fid2) {
+      datos.playoffs.final.local = fid1;
+      datos.playoffs.final.visita = fid2;
+      datos.playoffs.final.golesLocal = null;
+      datos.playoffs.final.golesVisita = null;
+      guardarDatos();
+      renderizarFaseFinal();
+    }
+  }
+}
+
+function editarPlayoff(ronda, idx) {
+  const modal = document.getElementById('modal-playoff');
+  document.getElementById('playoff-ronda').value = ronda;
+  document.getElementById('playoff-idx').value = idx;
+
+  let p;
+  if (ronda === 'semis') p = datos.playoffs.semis[idx];
+  else p = datos.playoffs.final;
+
+  const l = obtenerEntrenador(p.local);
+  const v = obtenerEntrenador(p.visita);
+  document.getElementById('playoff-local-label').textContent = l ? l.nombre : '?';
+  document.getElementById('playoff-visita-label').textContent = v ? v.nombre : '?';
+  document.getElementById('playoff-goles-local').value = p.golesLocal !== null ? p.golesLocal : '';
+  document.getElementById('playoff-goles-visita').value = p.golesVisita !== null ? p.golesVisita : '';
+  modal.classList.add('active');
+}
+
+function guardarPlayoff() {
+  const ronda = document.getElementById('playoff-ronda').value;
+  const idx = parseInt(document.getElementById('playoff-idx').value);
+  const gl = parseInt(document.getElementById('playoff-goles-local').value);
+  const gv = parseInt(document.getElementById('playoff-goles-visita').value);
+
+  if (isNaN(gl) || isNaN(gv) || gl < 0 || gv < 0) {
+    alert('Ingresa goles válidos (0 o más).');
+    return;
+  }
+  if (gl === gv) { alert('No puede haber empate en la fase final.'); return; }
+
+  let p;
+  if (ronda === 'semis') p = datos.playoffs.semis[idx];
+  else p = datos.playoffs.final;
+  p.golesLocal = gl;
+  p.golesVisita = gv;
+
+  if (ronda === 'semis' && datos.playoffs.semis[0].golesLocal !== null && datos.playoffs.semis[1].golesLocal !== null) {
+    const g1 = datos.playoffs.semis[0], g2 = datos.playoffs.semis[1];
+    datos.playoffs.final.local = g1.golesLocal > g1.golesVisita ? g1.local : g1.visita;
+    datos.playoffs.final.visita = g2.golesLocal > g2.golesVisita ? g2.local : g2.visita;
+    datos.playoffs.final.golesLocal = null;
+    datos.playoffs.final.golesVisita = null;
+  }
+
+  guardarDatos();
+  renderizarTodo();
+  document.getElementById('modal-playoff').classList.remove('active');
+}
+
+function cerrarModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+function renderizarTodo() {
+  const n = datos.entrenadores.length;
+  document.getElementById('num-entrenadores').textContent = n;
+  document.getElementById('num-rondas').textContent = n - 1;
+  renderizarClasificacion();
+  renderizarCalendario();
+  renderizarEntrenadores();
+  renderizarFaseFinal();
+  const btnAdmin = document.getElementById('btn-admin');
+  if (btnAdmin) {
+    if (urlParams.has('view')) {
+      btnAdmin.style.display = 'none';
+    } else {
+      btnAdmin.textContent = sessionStorage.getItem('admin_unlocked') ? '🔓' : '🔒';
+      btnAdmin.title = sessionStorage.getItem('admin_unlocked') ? 'Cerrar sesión' : 'Desbloquear edición';
+      btnAdmin.style.display = '';
+    }
+  }
+  if (esSoloLectura) {
+    document.querySelectorAll('.hidden-si-lectura').forEach(el => el.remove());
+    document.querySelectorAll('.entrenador-input').forEach(i => i.disabled = true);
+    document.querySelectorAll('.btn').forEach(b => { if (!b.closest('.modal')) b.style.display = 'none'; });
+    document.querySelectorAll('.edit-icon').forEach(el => el.remove());
+    document.querySelectorAll('.edit-calendar-btn').forEach(b => b.style.display = 'none');
+    document.querySelectorAll('#btn-iniciar-final, #btn-reiniciar-final').forEach(b => b.style.display = 'none');
+    document.querySelectorAll('.entrenador-input').forEach(i => i.style.cursor = 'default');
+  }
+}
+
+function compartirEnlace() {
+  const compacto = codificarDatosCompacto();
+  const url = `${location.origin}${location.pathname}?view&d=${encodeURIComponent(compacto)}`;
+  navigator.clipboard.writeText(url).then(() => {
+    alert('✅ Enlace copiado. Compártelo con quien quieras.');
+  }).catch(() => {
+    prompt('Copia este enlace:', url);
+  });
+}
+
+function toggleAdmin() {
+  if (sessionStorage.getItem('admin_unlocked')) {
+    sessionStorage.removeItem('admin_unlocked');
+    location.reload();
+  } else {
+    document.getElementById('input-pin').value = '';
+    document.getElementById('pin-error').style.display = 'none';
+    document.getElementById('modal-pin').classList.add('active');
+    setTimeout(() => document.getElementById('input-pin').focus(), 100);
+  }
+}
+
+function verificarPIN() {
+  if (document.getElementById('input-pin').value === ADMIN_PIN) {
+    sessionStorage.setItem('admin_unlocked', 'true');
+    document.getElementById('modal-pin').classList.remove('active');
+    location.reload();
+  } else {
+    document.getElementById('pin-error').style.display = '';
+    document.getElementById('input-pin').value = '';
+    document.getElementById('input-pin').focus();
+  }
+}
+
+function exportarHTML() {
+  const e = datos.entrenadores;
+  const p = datos.partidos;
+  const po = datos.playoffs || { activo: false, semis: [], final: {} };
+  const colorMap = e.map((_, i) => COLORES[i % COLORES.length]);
+  function esc(t) { return t.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  let matchHTML = '';
+  p.forEach((ronda, ri) => {
+    matchHTML += `<h3 style="color:#f7971e;margin:15px 0 8px">Ronda ${ri+1}</h3>`;
+    ronda.forEach(m => {
+      const l = e.find(x => x.id === m.local);
+      const v = e.find(x => x.id === m.visita);
+      const res = m.golesLocal !== null ? `${m.golesLocal} - ${m.golesVisita}` : 'Pendiente';
+      matchHTML += `<div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:6px;margin:4px 0">
+        <span>${esc(l ? l.nombre : '?')} vs ${esc(v ? v.nombre : '?')}</span>
+        <span style="font-weight:700">${res}</span>
+      </div>`;
+    });
+  });
+
+  let playoffHTML = '';
+  if (po.activo) {
+    playoffHTML += '<h3 style="color:#f7971e;margin-top:20px">🏆 Fase Final</h3>';
+    po.semis.forEach((s, i) => {
+      const l = e.find(x => x.id === s.local);
+      const v = e.find(x => x.id === s.visita);
+      const res = s.golesLocal !== null ? `${s.golesLocal} - ${s.golesVisita}` : 'Pendiente';
+      playoffHTML += `<div style="padding:8px 12px;background:rgba(255,255,255,.03);border-radius:6px;margin:4px 0">
+        <strong>Semifinal ${i+1}:</strong> ${esc(l ? l.nombre : '?')} vs ${esc(v ? v.nombre : '?')} — ${res}</div>`;
+    });
+    if (po.final.local) {
+      const l = e.find(x => x.id === po.final.local);
+      const v = e.find(x => x.id === po.final.visita);
+      const res = po.final.golesLocal !== null ? `${po.final.golesLocal} - ${po.final.golesVisita}` : 'Pendiente';
+      let campeon = '';
+      if (po.final.golesLocal !== null) {
+        const ganador = po.final.golesLocal > po.final.golesVisita ? po.final.local : po.final.visita;
+        const g = e.find(x => x.id === ganador);
+        campeon = `<div style="margin-top:8px;padding:10px;background:rgba(255,215,0,.15);border-radius:8px;text-align:center;font-size:1.2em">🏆 ¡${esc(g ? g.nombre : '?')} campeón!</div>`;
+      }
+      playoffHTML += `<div style="padding:8px 12px;background:rgba(247,151,30,.1);border:1px solid #f7971e;border-radius:6px;margin:4px 0">
+        <strong>Final:</strong> ${esc(l ? l.nombre : '?')} vs ${esc(v ? v.nombre : '?')} — ${res}</div>${campeon}`;
+    }
+  }
+
+  function renderStandings() {
+    const stats = {};
+    e.forEach(x => { stats[x.id] = { id: x.id, pj:0, g:0, e:0, p:0, gf:0, gc:0, dg:0, pts:0 }; });
+    p.forEach(r => r.forEach(m => {
+      if (m.golesLocal === null) return;
+      const l = stats[m.local], v = stats[m.visita];
+      l.pj++; v.pj++; l.gf += m.golesLocal; l.gc += m.golesVisita;
+      v.gf += m.golesVisita; v.gc += m.golesLocal;
+      if (m.golesLocal > m.golesVisita) { l.g++; v.p++; l.pts += 1; }
+      else if (m.golesLocal < m.golesVisita) { v.g++; l.p++; v.pts += 1; }
+      else { l.e++; v.e++; l.pts++; v.pts++; }
+    }));
+    Object.values(stats).forEach(s => { s.dg = s.gf - s.gc; });
+    return Object.values(stats).sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
+  }
+
+  const clasif = renderStandings();
+  let tablaRows = clasif.map((s, i) => {
+    const en = e.find(x => x.id === s.id);
+    return `<tr${i < 4 ? ` style="font-weight:700;color:${['#ffd700','#c0c0c0','#cd7f32','#4fc3f7'][i]}"` : ''}>
+      <td>${i+1}</td><td>${esc(en ? en.nombre : '?')}</td>
+      <td>${s.pj}</td><td>${s.g}</td><td>${s.e}</td><td>${s.p}</td>
+      <td>${s.gf}</td><td>${s.gc}</td><td>${s.dg > 0 ? '+' : ''}${s.dg}</td><td><strong>${s.pts}</strong></td>
+    </tr>`;
+  }).join('');
+
+  const style = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff;padding:20px;min-height:100vh}
+.container{max-width:900px;margin:0 auto}
+header{text-align:center;padding:20px 0}
+h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2em}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+th{color:#f7971e}`;
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Liguilla Pokémon</title><style>${style}</style></head>
+<body><div class="container">
+<header><h1>🏆 Liguilla Pokémon</h1><p>${e.length} entrenadores · ${p.length} rondas</p></header>
+<h2 style="color:#f7971e;margin-bottom:5px">Clasificación</h2>
+<table><thead><tr><th>#</th><th>Entrenador</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th></tr></thead>
+<tbody>${tablaRows}</tbody></table>
+<h2 style="color:#f7971e;margin:20px 0 5px">Calendario</h2>
+${matchHTML}
+${playoffHTML}
+</div></body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'liguilla-pokemon.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+const ghConfig = JSON.parse(localStorage.getItem('github_config') || '{}');
+
+function configurarGitHub() {
+  document.getElementById('gh-owner').value = ghConfig.owner || '';
+  document.getElementById('gh-repo').value = ghConfig.repo || '';
+  document.getElementById('gh-branch').value = ghConfig.branch || 'main';
+  document.getElementById('gh-token').value = ghConfig.token || '';
+  document.getElementById('modal-github').classList.add('active');
+}
+
+function guardarGitHub() {
+  const cfg = {
+    owner: document.getElementById('gh-owner').value.trim(),
+    repo: document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main',
+    token: document.getElementById('gh-token').value.trim(),
+  };
+  if (!cfg.owner || !cfg.repo || !cfg.token) { alert('Completa todos los campos.'); return; }
+  localStorage.setItem('github_config', JSON.stringify(cfg));
+  Object.assign(ghConfig, cfg);
+  document.getElementById('btn-publicar').style.display = '';
+  cerrarModal('modal-github');
+}
+
+async function publicarGitHub() {
+  if (!ghConfig.owner) { alert('Configura GitHub primero (⚙️ GitHub).'); return; }
+  const btn = document.getElementById('btn-publicar');
+  btn.textContent = '⏳ Publicando...';
+  btn.disabled = true;
+
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify({ entrenadores: datos.entrenadores, partidos: datos.partidos, playoffs: datos.playoffs, posicionesPrevias: datos.posicionesPrevias }, null, 2))));
+
+  try {
+    const shaRes = await fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/data.json?ref=${ghConfig.branch}`, {
+      headers: { Authorization: `token ${ghConfig.token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    let sha = '';
+    if (shaRes.ok) { const d = await shaRes.json(); sha = d.sha; }
+
+    const res = await fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/data.json`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${ghConfig.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Actualizar datos torneo', content, sha, branch: ghConfig.branch })
+    });
+
+    if (res.ok) {
+      alert('✅ Datos publicados. Tus amigos verán los cambios al recargar la página.');
+    } else {
+      const err = await res.json();
+      alert('Error: ' + (err.message || 'desconocido'));
+    }
+  } catch (e) {
+    alert('Error de conexión: ' + e.message);
+  }
+  btn.textContent = '📤 Publicar cambios';
+  btn.disabled = false;
+}
+
+(async function cargarDesdeGitHub() {
+  if (localStorage.getItem('github_config')) {
+    const cfg = JSON.parse(localStorage.getItem('github_config'));
+    if (cfg.owner && cfg.repo) document.getElementById('btn-publicar').style.display = '';
+  }
+  try {
+    const res = await fetch('./data.json?t=' + Date.now());
+    if (res.ok) {
+      const d = await res.json();
+      if (d.entrenadores && d.partidos) {
+        datos = d;
+        localStorage.setItem('liguilla_pokemon', JSON.stringify(d));
+        renderizarTodo();
+      }
+    }
+  } catch (e) {}
+})();
+
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(btn.dataset.section).classList.add('active');
+  });
+});
+
+renderizarTodo();
+</script>
+</body>
+</html>
