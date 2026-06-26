@@ -1641,7 +1641,7 @@ if (ghConfig.owner && ghConfig.repo) {
   if (syncBtn) syncBtn.style.display = '';
 }
 if (esSoloLectura) {
-  fetch('https://raw.githubusercontent.com/Davidbg12/Liguilla/main/data.json')
+  fetch('data.json')
     .then(r => r.ok ? r.json() : null)
     .then(d => {
       if (d && d.entrenadores && d.entrenadores.length) {
