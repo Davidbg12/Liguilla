@@ -1640,12 +1640,11 @@ if (ghConfig.owner && ghConfig.repo) {
   if (pubBtn) pubBtn.style.display = '';
   if (syncBtn) syncBtn.style.display = '';
 }
-const hayResultados = datos.partidos.some(r => r.some(p => p.golesLocal !== null));
-if (!hayResultados) {
+if (esSoloLectura) {
   fetch('https://raw.githubusercontent.com/Davidbg12/Liguilla/main/data.json')
     .then(r => r.ok ? r.json() : null)
     .then(d => {
-      if (d && d.entrenadores && d.entrenadores.length && d.partidos.some(r => r.some(p => p.golesLocal !== null))) {
+      if (d && d.entrenadores && d.entrenadores.length) {
         datos = d;
         localStorage.setItem('liguilla_pokemon', JSON.stringify(d));
         renderizarTodo();
