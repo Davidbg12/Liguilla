@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liguilla Pokémon</title>
+<title>Nuzlocke Pape</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Press+Start+2P&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -285,7 +285,7 @@ tr.bottom4:hover td { background: var(--bottom4-hover) !important; }
 <body>
 <div class="container">
 <header>
-  <h1><span class="pokeball-title"></span> Liguilla Pokémon</h1>
+  <h1><span class="pokeball-title"></span> Nuzlocke Pape</h1>
   <p><span id="num-entrenadores" style="color:#D4A800;font-weight:600"></span> entrenadores · Todos contra todos · <span id="num-rondas" style="color:#D4A800;font-weight:600"></span> rondas</p>
   <button id="btn-admin" onclick="toggleAdmin()" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:1.5em;cursor:pointer;opacity:.5" title="Modo edición">🔒</button>
   <button class="theme-toggle" onclick="cambiarTema()" title="Cambiar tema" id="btn-tema"></button>
@@ -1490,9 +1490,9 @@ th{color:#D4A800}`;
   const html = `<!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Liguilla Pokémon</title><style>${style}</style></head>
+<title>Nuzlocke Pape</title><style>${style}</style></head>
 <body><div class="container">
-<header><h1>🏆 Liguilla Pokémon</h1><p>${e.length} entrenadores · ${p.length} rondas</p></header>
+<header><h1>🏆 Nuzlocke Pape</h1><p>${e.length} entrenadores · ${p.length} rondas</p></header>
 <h2 style="color:#D4A800;margin-bottom:5px">Clasificación</h2>
 <table><thead><tr><th>#</th><th>Entrenador</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th></tr></thead>
 <tbody>${tablaRows}</tbody></table>
