@@ -449,8 +449,6 @@ const ADMIN_PIN = '1221';
 const urlParams = new URLSearchParams(location.search);
 let ghConfig = {};
 try { const _v = localStorage.getItem('github_config'); if (_v) ghConfig = JSON.parse(_v); } catch (e) { ghConfig = {}; }
-let _timerAutoPub = null;
-let autoPublicando = false;
 let datos = cargarDatos();
 guardarDatos();
 let adminUnlocked = false;
@@ -621,42 +619,6 @@ function decodificarDatosCompacto(str) {
 
 function guardarDatos() {
   try { localStorage.setItem('liguilla_pokemon', JSON.stringify(datos)); } catch (e) {}
-  programarAutoPublicar();
-}
-
-function programarAutoPublicar() {
-  if (!ghConfig.owner) return;
-  if (_timerAutoPub) clearTimeout(_timerAutoPub);
-  _timerAutoPub = setTimeout(autoPublicarGitHub, 2000);
-}
-
-async function autoPublicarGitHub() {
-  if (!ghConfig.owner) return;
-  if (autoPublicando) return;
-  autoPublicando = true;
-  try {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify({ entrenadores: datos.entrenadores, partidos: datos.partidos, playoffs: datos.playoffs, posicionesPrevias: datos.posicionesPrevias }, null, 2))));
-    for (let intento = 0; intento < 3; intento++) {
-      const shaRes = await fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/data.json?ref=${ghConfig.branch}`, {
-        headers: { Authorization: `token ${ghConfig.token}`, Accept: 'application/vnd.github.v3+json' }
-      });
-      let sha = '';
-      if (shaRes.ok) { const d = await shaRes.json(); sha = d.sha; }
-      const res = await fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/data.json`, {
-        method: 'PUT',
-        headers: { Authorization: `token ${ghConfig.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: 'Auto-actualizar datos torneo', content, sha, branch: ghConfig.branch })
-      });
-      if (res.ok) break;
-      const err = await res.json();
-      if (res.status === 422 && err.message && err.message.includes('sha') && intento < 2) continue;
-      console.warn('Auto-publish error:', err.message);
-      break;
-    }
-  } catch (e) {
-    console.warn('Auto-publish error:', e.message);
-  }
-  autoPublicando = false;
 }
 
 function obtenerEntrenador(id) {
@@ -1573,7 +1535,6 @@ function guardarGitHub() {
 
 async function publicarGitHub() {
   if (!ghConfig.owner) { alert('Configura GitHub primero (⚙️ GitHub).'); return; }
-  if (_timerAutoPub) clearTimeout(_timerAutoPub);
   const btn = document.getElementById('btn-publicar');
   btn.textContent = '⏳ Publicando...';
   btn.disabled = true;
