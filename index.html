@@ -701,9 +701,6 @@ function renderizarClasificacion() {
       <td><strong>${s.pts}</strong></td>
     </tr>`;
   }).join('');
-  datos.posicionesPrevias = {};
-  ordenados.forEach((s, i) => { datos.posicionesPrevias[s.id] = i; });
-  guardarDatos();
 }
 
 function renderizarCalendario() {
@@ -828,6 +825,31 @@ function actualizarLabelsEdicion() {
 
 document.getElementById('sel-partido')?.addEventListener('change', actualizarLabelsEdicion);
 
+function capturarPosicionesPrevias() {
+  const stats = {};
+  datos.entrenadores.forEach(e => {
+    stats[e.id] = { id: e.id, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, dg: 0, pts: 0 };
+  });
+  datos.partidos.forEach(ronda => {
+    ronda.forEach(p => {
+      if (p.golesLocal === null || p.golesVisita === null) return;
+      const l = stats[p.local], v = stats[p.visita];
+      l.pj++; v.pj++;
+      l.gf += p.golesLocal; l.gc += p.golesVisita;
+      v.gf += p.golesVisita; v.gc += p.golesLocal;
+      if (p.golesLocal > p.golesVisita) { l.g++; v.p++; l.pts += 1; }
+      else if (p.golesLocal < p.golesVisita) { v.g++; l.p++; v.pts += 1; }
+      else { l.e++; v.e++; l.pts++; v.pts++; }
+    });
+  });
+  Object.values(stats).forEach(s => { s.dg = s.gf - s.gc; });
+  const ordenados = Object.values(stats).sort((a, b) =>
+    b.pts - a.pts || b.dg - a.dg || b.gf - a.gf
+  );
+  datos.posicionesPrevias = {};
+  ordenados.forEach((s, i) => { datos.posicionesPrevias[s.id] = i; });
+}
+
 function guardarResultado() {
   const val = document.getElementById('sel-partido').value;
   if (!val) return;
@@ -843,6 +865,7 @@ function guardarResultado() {
   const ronda = datos.partidos[ri];
   const partido = ronda.find(p => p.local === localId && p.visita === visitaId);
   if (partido) {
+    capturarPosicionesPrevias();
     partido.golesLocal = gl;
     partido.golesVisita = gv;
     guardarDatos();
