@@ -568,6 +568,8 @@ function generarCalendario(n, ordenInicial) {
   return rondas;
 }
 
+let datosLocal = false;
+
 function cargarDatos() {
   const dParam = new URLSearchParams(location.search).get('d');
   if (dParam) {
@@ -580,7 +582,7 @@ function cargarDatos() {
     const raw = localStorage.getItem('liguilla_pokemon');
     if (raw) {
       const d = JSON.parse(raw);
-      if (d.entrenadores && d.entrenadores.length > 0 && d.partidos && d.partidos.length > 0) return d;
+      if (d.entrenadores && d.entrenadores.length > 0 && d.partidos && d.partidos.length > 0) { datosLocal = true; return d; }
     }
   } catch (e) {}
   return datosDefault();
@@ -1656,7 +1658,7 @@ if (ghConfig.owner && ghConfig.repo) {
   if (pubBtn) pubBtn.style.display = '';
   if (syncBtn) syncBtn.style.display = '';
 }
-if (esSoloLectura) {
+if (!datosLocal) {
   fetch('data.json')
     .then(r => r.ok ? r.json() : null)
     .then(d => {
