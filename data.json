@@ -38,104 +38,104 @@
       {
         "local": 1,
         "visita": 3,
-        "golesLocal": 1,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 2,
         "visita": 7,
-        "golesLocal": 2,
-        "golesVisita": 0
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 8,
         "visita": 6,
-        "golesLocal": 0,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 4,
         "visita": 5,
-        "golesLocal": 2,
-        "golesVisita": 0
+        "golesLocal": null,
+        "golesVisita": null
       }
     ],
     [
       {
         "local": 2,
         "visita": 1,
-        "golesLocal": 2,
-        "golesVisita": 1
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 3,
         "visita": 4,
-        "golesLocal": 0,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 6,
         "visita": 5,
-        "golesLocal": 2,
-        "golesVisita": 0
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 7,
         "visita": 8,
-        "golesLocal": 1,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       }
     ],
     [
       {
         "local": 4,
         "visita": 2,
-        "golesLocal": 0,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 6,
         "visita": 3,
-        "golesLocal": 2,
-        "golesVisita": 1
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 8,
         "visita": 5,
-        "golesLocal": 0,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 1,
         "visita": 7,
-        "golesLocal": 2,
-        "golesVisita": 1
+        "golesLocal": null,
+        "golesVisita": null
       }
     ],
     [
       {
         "local": 2,
         "visita": 6,
-        "golesLocal": 1,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 1,
         "visita": 4,
-        "golesLocal": 2,
-        "golesVisita": 0
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 3,
         "visita": 8,
-        "golesLocal": 1,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       },
       {
         "local": 7,
         "visita": 5,
-        "golesLocal": 0,
-        "golesVisita": 2
+        "golesLocal": null,
+        "golesVisita": null
       }
     ],
     [
@@ -281,13 +281,13 @@
     }
   },
   "posicionesPrevias": {
-    "1": 2,
+    "1": 0,
     "2": 1,
-    "3": 6,
+    "3": 2,
     "4": 3,
     "5": 4,
-    "6": 0,
-    "7": 7,
-    "8": 5
+    "6": 5,
+    "7": 6,
+    "8": 7
   }
 }
